@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>LLM Website Gen Test — сравнение моделей</title>
+<meta name="description" content="Сравнение LLM-моделей по генерации сайта «Рога и Копыта»: топ, графики, стоимость и ссылки на файлы.">
+<style>
+  :root {
+    --bg: #161616;
+    --surface: #1e1e1e;
+    --surface-2: #262626;
+    --border: #303030;
+    --text: #e2e2e2;
+    --muted: #868686;
+    --accent: #5cc4b0;
+    --accent-dim: rgba(92, 196, 176, 0.09);
+    --danger: #d9736c;
+    --radius: 8px;
+    --maxw: 1040px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Header */
+  .site-header {
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-block: 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--text);
+  }
+  .brand strong { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; }
+  .brand span { font-size: .78rem; color: var(--muted); }
+  .site-header__meta {
+    margin: 0;
+    font-size: .78rem;
+    color: var(--muted);
+  }
+
+  /* Main + animations */
+  main { padding-block: 44px 72px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    main > section { animation: fadeUp .7s ease both; }
+    main > section:nth-child(1) { animation-delay: .04s; }
+    main > section:nth-child(2) { animation-delay: .12s; }
+    main > section:nth-child(3) { animation-delay: .20s; }
+    main > section:nth-child(4) { animation-delay: .28s; }
+    main > section:nth-child(5) { animation-delay: .36s; }
+    main > section:nth-child(6) { animation-delay: .44s; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  section { margin-bottom: 52px; }
+  section:last-of-type { margin-bottom: 0; }
+
+  .hero h1 {
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.15rem);
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    margin: 0 0 12px;
+    font-weight: 700;
+  }
+  .hero p {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--muted);
+  }
+
+  .label {
+    display: block;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* Rank */
+  .rank {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .rank__row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 4px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 2px solid transparent;
+    transition: background-color .2s ease, border-color .2s ease;
+  }
+  .rank__row:hover {
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+  .rank__row--first { border-left-color: var(--accent); }
+  .rank__pos {
+    font-family: var(--mono);
+    font-size: .9rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .rank__row--first .rank__pos { color: var(--accent); }
+  .rank__main { min-width: 0; }
+  .rank__name {
+    display: block;
+    font-weight: 700;
+    font-size: .98rem;
+    line-height: 1.3;
+  }
+  .rank__meta {
+    display: block;
+    font-size: .8rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .rank__score {
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .rank__row--first .rank__score { color: var(--accent); }
+
+  @media (min-width: 640px) {
+    .rank__row {
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      gap: 16px;
+      padding: 18px 4px 18px 14px;
+    }
+    .rank__name { font-size: 1rem; }
+    .rank__score { font-size: 1.3rem; }
+  }
+
+  /* Charts */
+  .charts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  @media (min-width: 760px) {
+    .charts { grid-template-columns: 1fr 1fr; }
+  }
+  .chart {
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .chart__title {
+    margin: 0 0 4px;
+    font-size: .95rem;
+    font-weight: 700;
+  }
+  .chart__hint {
+    margin: 0 0 18px;
+    font-size: .78rem;
+    color: var(--muted);
+  }
+  .chart__row {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .chart__row + .chart__row { border-top: 1px solid var(--border); }
+  .chart__label {
+    font-size: .82rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chart__track {
+    position: relative;
+    height: 8px;
+    background: var(--surface-2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .chart__bar {
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(.2, .8, .2, 1);
+  }
+  .chart__bar--cost {
+    background: var(--accent);
+    opacity: .55;
+  }
+  .chart__value {
+    font-family: var(--mono);
+    font-size: .8rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .chart__value--strong { color: var(--text); font-weight: 700; }
+
+  @media (min-width: 480px) {
+    .chart__row { grid-template-columns: 112px minmax(0, 1fr) 52px; }
+  }
+
+  /* Files */
+  .files {
+    border-top: 1px solid var(--border);
+  }
+  .file {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px 16px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border);
+    transition: background-color .2s ease;
+  }
+  .file:hover { background: var(--accent-dim); }
+  .file__name {
+    display: block;
+    font-weight: 700;
+    font-size: .95rem;
+    line-height: 1.35;
+  }
+  .file__path {
+    display: block;
+    font-family: var(--mono);
+    font-size: .76rem;
+    color: var(--muted);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file__actions { display: flex; gap: 8px; }
+  @media (max-width: 520px) {
+    .file { grid-template-columns: 1fr; }
+    .file__actions { justify-content: flex-start; }
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 6px 14px;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #141414;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .btn:hover {
+    background: #4db09c;
+    border-color: #4db09c;
+    color: #141414;
+    text-decoration: none;
+  }
+  .btn__arrow {
+    font-size: .95em;
+    line-height: 1;
+    transition: transform .2s ease;
+  }
+  .btn:hover .btn__arrow { transform: translate(1px, -1px); }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: .86rem;
+  }
+  caption {
+    caption-side: top;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: .76rem;
+    color: var(--muted);
+  }
+  th, td {
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  thead th {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody tr { transition: background-color .2s ease; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--accent-dim); }
+  td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .name { font-weight: 700; white-space: nowrap; }
+  .num--mono { font-family: var(--mono); }
+  .score {
+    display: inline-block;
+    min-width: 30px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: .76rem;
+    font-weight: 700;
+    text-align: center;
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .score--hi { color: var(--accent); }
+  .score--lo { color: var(--danger); }
+  .total { font-weight: 700; }
+
+  /* Notes */
+  .notes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 720px) {
+    .notes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .note {
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color .2s ease;
+  }
+  .note:hover { border-color: var(--accent); }
+  .note__kicker {
+    display: block;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .note__title {
+    display: block;
+    font-weight: 700;
+    font-size: .96rem;
+    margin-bottom: 6px;
+  }
+  .note__text {
+    margin: 0;
+    font-size: .86rem;
+    color: var(--muted);
+  }
+
+  .hint {
+    margin-top: 14px;
+    font-size: .8rem;
+    color: var(--muted);
+  }
+  code {
+    font-family: var(--mono);
+    font-size: .85em;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  /* Footer */
+  footer.site-footer {
+    border-top: 1px solid var(--border);
+    padding-block: 24px;
+    font-size: .8rem;
+    color: var(--muted);
+  }
+  footer.site-footer p { margin: 0 0 6px; }
+  footer.site-footer p:last-child { margin-bottom: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="#top">
+      <strong>LLM Website Gen Test</strong>
+      <span>«Рога и Копыта»</span>
+    </a>
+    <p class="site-header__meta">Одно ТЗ · пять моделей</p>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">Пять моделей — один и тот же сайт</h1>
+    <p>
+      Одна и та же задача: сгенерировать одностраничный сайт «Рога и Копыта» с нуля.
+      Ниже — топ по среднему баллу (шкала 0–10), графики, ссылки на итоговые HTML-файлы
+      и полная таблица по критериям.
+    </p>
+  </section>
+
+  <section aria-labelledby="top-title">
+    <span class="label" id="top-title">Топ по среднему баллу</span>
+    <ol class="rank">
+
+      <li class="rank__row rank__row--first">
+        <span class="rank__pos">01</span>
+        <div class="rank__main">
+          <span class="rank__name">GPT-6 Astra</span>
+          <span class="rank__meta">6.38 ₽ · медиана 10 · всё с первой итерации, чистая консоль</span>
+        </div>
+        <span class="rank__score">8.8</span>
+      </li>
+
+      <li class="rank__row">
+        <span class="rank__pos">02</span>
+        <div class="rank__main">
+          <span class="rank__name">DeepSeek V4.1-Flash</span>
+          <span class="rank__meta">6.41 ₽ · медиана 10 · нативный &lt;dialog&gt;, системная тема</span>
+        </div>
+        <span class="rank__score">8.8</span>
+      </li>
+
+      <li class="rank__row">
+        <span class="rank__pos">03</span>
+        <div class="rank__main">
+          <span class="rank__name">Claude Opus 5.5</span>
+          <span class="rank__meta">42.32 ₽ · медиана 10 · сильнейший дизайн, самая высокая цена</span>
+        </div>
+        <span class="rank__score">8.4</span>
+      </li>
+
+      <li class="rank__row">
+        <span class="rank__pos">04</span>
+        <div class="rank__main">
+          <span class="rank__name">Qwen 3.8 Max Prime</span>
+          <span class="rank__meta">65.79 ₽ · медиана 10 · лучший JS и дизайн, самый дорогой прогон</span>
+        </div>
+        <span class="rank__score">8.0</span>
+      </li>
+
+      <li class="rank__row">
+        <span class="rank__pos">05</span>
+        <div class="rank__main">
+          <span class="rank__name">GLM 5.3</span>
+          <span class="rank__meta">5.34 ₽ · медиана 8 · самая низкая цена, сырая вёрстка</span>
+        </div>
+        <span class="rank__score">8.0</span>
+      </li>
+
+    </ol>
+  </section>
+
+  <section aria-labelledby="charts-title">
+    <span class="label" id="charts-title">Графики</span>
+    <div class="charts">
+
+      <div class="chart">
+        <h3 class="chart__title">Средний балл</h3>
+        <p class="chart__hint">Среднее по пяти критериям, шкала 0–10.</p>
+
+        <div>
+          <div class="chart__row">
+            <span class="chart__label">GPT-6 Astra</span>
+            <div class="chart__track"><div class="chart__bar" data-value="88"></div></div>
+            <span class="chart__value chart__value--strong">8.8</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">DeepSeek V4.1</span>
+            <div class="chart__track"><div class="chart__bar" data-value="88"></div></div>
+            <span class="chart__value chart__value--strong">8.8</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">Claude Opus 5.5</span>
+            <div class="chart__track"><div class="chart__bar" data-value="84"></div></div>
+            <span class="chart__value chart__value--strong">8.4</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">Qwen 3.8 Max</span>
+            <div class="chart__track"><div class="chart__bar" data-value="80"></div></div>
+            <span class="chart__value chart__value--strong">8.0</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">GLM 5.3</span>
+            <div class="chart__track"><div class="chart__bar" data-value="80"></div></div>
+            <span class="chart__value chart__value--strong">8.0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart">
+        <h3 class="chart__title">Стоимость прогона</h3>
+        <p class="chart__hint">Полосы пропорциональны цене; значения в рублях.</p>
+
+        <div>
+          <div class="chart__row">
+            <span class="chart__label">Qwen 3.8 Max</span>
+            <div class="chart__track"><div class="chart__bar chart__bar--cost" data-value="100"></div></div>
+            <span class="chart__value">65.79</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">Claude Opus 5.5</span>
+            <div class="chart__track"><div class="chart__bar chart__bar--cost" data-value="64.3"></div></div>
+            <span class="chart__value">42.32</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">DeepSeek V4.1</span>
+            <div class="chart__track"><div class="chart__bar chart__bar--cost" data-value="9.7"></div></div>
+            <span class="chart__value">6.41</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">GPT-6 Astra</span>
+            <div class="chart__track"><div class="chart__bar chart__bar--cost" data-value="9.7"></div></div>
+            <span class="chart__value">6.38</span>
+          </div>
+          <div class="chart__row">
+            <span class="chart__label">GLM 5.3</span>
+            <div class="chart__track"><div class="chart__bar chart__bar--cost" data-value="8.1"></div></div>
+            <span class="chart__value">5.34</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="files-title">
+    <span class="label" id="files-title">Файлы</span>
+    <div class="files">
+
+      <div class="file">
+        <div class="file__info">
+          <span class="file__name">GPT-6 Astra</span>
+          <span class="file__path">gpt6astra.html</span>
+        </div>
+        <div class="file__actions">
+          <a class="btn" href="gpt6astra.html" target="_blank" rel="noopener noreferrer">
+            Открыть <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="file">
+        <div class="file__info">
+          <span class="file__name">Claude Opus 5.5</span>
+          <span class="file__path">claudeopus5.5.html</span>
+        </div>
+        <div class="file__actions">
+          <a class="btn" href="claudeopus5.5.html" target="_blank" rel="noopener noreferrer">
+            Открыть <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="file">
+        <div class="file__info">
+          <span class="file__name">DeepSeek V4.1-Flash</span>
+          <span class="file__path">deepseekv4.1flash.html</span>
+        </div>
+        <div class="file__actions">
+          <a class="btn" href="deepseekv4.1flash.html" target="_blank" rel="noopener noreferrer">
+            Открыть <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="file">
+        <div class="file__info">
+          <span class="file__name">Qwen 3.8 Max Prime</span>
+          <span class="file__path">qwen3.8maxprime.html</span>
+        </div>
+        <div class="file__actions">
+          <a class="btn" href="qwen3.8maxprime.html" target="_blank" rel="noopener noreferrer">
+            Открыть <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="file">
+        <div class="file__info">
+          <span class="file__name">GLM 5.3</span>
+          <span class="file__path">glm5.3.html</span>
+        </div>
+        <div class="file__actions">
+          <a class="btn" href="glm5.3.html" target="_blank" rel="noopener noreferrer">
+            Открыть <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <p class="hint">
+      Файлы должны лежать в той же папке, что и этот <code>index.html</code>.
+      Ссылки открываются в новой вкладке.
+    </p>
+  </section>
+
+  <section aria-labelledby="stats-title">
+    <span class="label" id="stats-title">Полная статистика</span>
+    <div class="table-wrap">
+      <table>
+        <caption>Баллы по десятибалльной шкале. «Средний» и «Медиана» — по пяти критериям, включая стоимость.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Модель</th>
+            <th scope="col" class="num">ТЗ</th>
+            <th scope="col" class="num">Код</th>
+            <th scope="col" class="num">Работа</th>
+            <th scope="col" class="num">Дизайн</th>
+            <th scope="col" class="num">Цена</th>
+            <th scope="col" class="num">Средний</th>
+            <th scope="col" class="num">Медиана</th>
+            <th scope="col" class="num">₽</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">GPT-6 Astra</td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score">6</span></td>
+            <td class="num"><span class="score">8</span></td>
+            <td class="num total">8.8</td>
+            <td class="num total">10</td>
+            <td class="num num--mono">6.37718</td>
+          </tr>
+          <tr>
+            <td class="name">DeepSeek V4.1-Flash</td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score">8</span></td>
+            <td class="num"><span class="score">6</span></td>
+            <td class="num total">8.8</td>
+            <td class="num total">10</td>
+            <td class="num num--mono">6.41188</td>
+          </tr>
+          <tr>
+            <td class="name">Claude Opus 5.5</td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score">8</span></td>
+            <td class="num"><span class="score score--lo">4</span></td>
+            <td class="num total">8.4</td>
+            <td class="num total">10</td>
+            <td class="num num--mono">42.32061</td>
+          </tr>
+          <tr>
+            <td class="name">Qwen 3.8 Max Prime</td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score">8</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score score--lo">2</span></td>
+            <td class="num total">8.0</td>
+            <td class="num total">10</td>
+            <td class="num num--mono">65.78881</td>
+          </tr>
+          <tr>
+            <td class="name">GLM 5.3</td>
+            <td class="num"><span class="score">8</span></td>
+            <td class="num"><span class="score score--lo">6</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num"><span class="score">6</span></td>
+            <td class="num"><span class="score score--hi">10</span></td>
+            <td class="num total">8.0</td>
+            <td class="num total">8</td>
+            <td class="num num--mono">5.34114</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="notes-title">
+    <span class="label" id="notes-title">Короткий вывод</span>
+    <div class="notes">
+
+      <div class="note">
+        <span class="note__kicker">Лучший баланс</span>
+        <span class="note__title">GPT-6 Astra</span>
+        <p class="note__text">
+          8.8 при цене 6.38 ₽. Всё работает с первого клика, консоль чистая,
+          вёрстка не разваливается. Дизайн стерильный, текста много — но по надёжности это лучший выбор «из коробки».
+        </p>
+      </div>
+
+      <div class="note">
+        <span class="note__kicker">Лучшая цена/качество</span>
+        <span class="note__title">DeepSeek V4.1-Flash</span>
+        <p class="note__text">
+          8.8 при цене 6.41 ₽. Сама добавила <code>prefers-color-scheme</code> и нативный
+          <code>&lt;dialog&gt;</code>. Код без оверинжиниринга, визуально всё ещё похоже на ИИ, но это лучший выбор в тесте.
+        </p>
+      </div>
+
+      <div class="note">
+        <span class="note__kicker">Самый эстетичный</span>
+        <span class="note__title">Claude Opus 5.5</span>
+        <p class="note__text">
+          8.4 при цене 42.32 ₽. Тёмная тема как самостоятельная палитра, аккуратная типографика,
+          персональное обращение по имени в статусе формы. Дорого, но если бюджет не ограничен — можно брать.
+        </p>
+      </div>
+
+      <div class="note">
+        <span class="note__kicker">Максимум функций</span>
+        <span class="note__title">Qwen 3.8 Max Prime</span>
+        <p class="note__text">
+          8.0 при цене 65.79 ₽. Самый сложный JS: скроллспай, ловушка фокуса, пересчёт высоты
+          аккордеона при ресайзе. Код граничит с оверинжинирингом, цена делает модель нерентабельной для одностраничников.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>LLM Website Gen Test</strong> — сравнение моделей на одном ТЗ. Страница статическая, без внешних зависимостей.</p>
+    <p>HTML-файлы лежат в той же папке, что и <code>index.html</code>. Все ссылки относительные и открываются в новой вкладке.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    'use strict';
+    var bars = document.querySelectorAll('.chart__bar');
+    if (!bars.length) return;
+    bars.forEach(function (bar, i) {
+      setTimeout(function () {
+        bar.style.width = bar.getAttribute('data-value') + '%';
+      }, 150 + i * 70);
+    });
+  })();
+</script>
+
+</body>
+</html>
