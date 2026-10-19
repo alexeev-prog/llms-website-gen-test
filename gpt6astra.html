@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Черноморское отделение Арбатовской конторы по заготовке рогов и копыт. Заготовка, приёмка и оптовые поставки для юридических лиц.">
+  <title>Рога и Копыта — Черноморское отделение</title>
+  <script>
+    try {
+      if (localStorage.getItem('rk-theme') === 'dark') {
+        document.documentElement.classList.add('theme--dark');
+      }
+    } catch (error) {}
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f5f4ef;
+      --surface: #ffffff;
+      --surface-alt: #eaece5;
+      --text: #222a25;
+      --muted: #566159;
+      --accent: #305c43;
+      --accent-hover: #234632;
+      --on-accent: #ffffff;
+      --border: #c6cec5;
+      --error: #a32929;
+      --overlay: rgb(15 23 18 / 72%);
+      --shadow: 0 18px 60px rgb(20 35 25 / 14%);
+      --radius: 6px;
+    }
+
+    .theme--dark {
+      color-scheme: dark;
+      --background: #171e1a;
+      --surface: #202a23;
+      --surface-alt: #29362d;
+      --text: #eef1e9;
+      --muted: #bbc7bd;
+      --accent: #abd0af;
+      --accent-hover: #c7e3ca;
+      --on-accent: #17251b;
+      --border: #4c5d50;
+      --error: #ffb4ad;
+      --shadow: 0 18px 60px rgb(0 0 0 / 30%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      transition: background-color .2s, color .2s;
+    }
+    body.page--locked { overflow: hidden; }
+    button, input, textarea { font: inherit; }
+    button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: var(--accent); text-underline-offset: 4px; }
+    a:hover { text-decoration-thickness: 2px; }
+    button { color: inherit; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { line-height: 1.15; }
+    h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); font-weight: 600; letter-spacing: -.045em; }
+    h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); font-weight: 600; letter-spacing: -.03em; }
+    h3 { font-size: 1.2rem; }
+    p, a, h1, h2, h3 { overflow-wrap: break-word; }
+    .layout { width: min(100% - 40px, 1160px); margin-inline: auto; }
+    .skip-link {
+      position: fixed; top: 12px; left: 12px; z-index: 100;
+      padding: 12px 18px; background: var(--surface); color: var(--accent);
+      transform: translateY(-160%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .header {
+      position: sticky; top: 0; z-index: 20;
+      background: var(--background); border-bottom: 1px solid var(--border);
+    }
+    .header__inner {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+      min-height: 88px; padding-block: 14px;
+    }
+    .brand { flex: 1; text-decoration: none; color: var(--text); min-width: 0; }
+    .brand__name { display: block; font-size: 1.12rem; font-weight: 700; letter-spacing: -.035em; }
+    .brand__caption { display: block; font-size: .7rem; color: var(--muted); }
+    .header__actions { display: flex; gap: 8px; }
+    .icon-button {
+      display: inline-grid; place-items: center; width: 44px; height: 44px;
+      padding: 0; background: transparent; border: 1px solid var(--border);
+      border-radius: var(--radius); transition: background-color .2s;
+    }
+    .icon-button:hover { background: var(--surface-alt); }
+    .icon-button__symbol { font-size: 1.3rem; line-height: 1; }
+    .burger__lines, .burger__lines::before, .burger__lines::after {
+      display: block; width: 19px; height: 2px; background: var(--text);
+      transition: transform .2s;
+    }
+    .burger__lines { position: relative; }
+    .burger__lines::before, .burger__lines::after { content: ""; position: absolute; }
+    .burger__lines::before { top: -6px; }
+    .burger__lines::after { top: 6px; }
+    .burger[aria-expanded="true"] .burger__lines { background: transparent; }
+    .burger[aria-expanded="true"] .burger__lines::before { top: 0; transform: rotate(45deg); }
+    .burger[aria-expanded="true"] .burger__lines::after { top: 0; transform: rotate(-45deg); }
+    .navigation { display: none; width: 100%; }
+    .navigation--open { display: block; }
+    .navigation__list { list-style: none; margin: 0; padding: 8px 0 0; }
+    .navigation__link {
+      display: block; padding: 10px 0; text-decoration: none;
+      color: var(--text); font-size: .93rem;
+    }
+    .navigation__link:hover { color: var(--accent); text-decoration: underline; }
+    .section { padding-block: 64px; border-bottom: 1px solid var(--border); }
+    .section__eyebrow {
+      margin-bottom: 16px; color: var(--accent);
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .14em; font-weight: 700;
+    }
+    .section__intro { max-width: 660px; margin-top: 20px; color: var(--muted); }
+    .section__heading { margin-bottom: 32px; }
+    .about { padding-top: 54px; }
+    .about__grid { display: grid; gap: 36px; }
+    .about__text { margin-top: 24px; color: var(--muted); max-width: 650px; }
+    .about__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 11px 20px; border: 1px solid var(--accent);
+      border-radius: var(--radius); background: var(--accent); color: var(--on-accent);
+      font-size: .94rem; font-weight: 600; text-decoration: none; text-align: center;
+      transition: background-color .2s, transform .2s;
+    }
+    .button:hover { background: var(--accent-hover); transform: translateY(-2px); }
+    .button--secondary { background: transparent; color: var(--accent); }
+    .button--secondary:hover { background: var(--surface-alt); }
+    .about__record { background: var(--surface-alt); border: 1px solid var(--border); padding: 26px; }
+    .about__seal {
+      display: flex; align-items: center; gap: 14px; padding-bottom: 24px;
+      border-bottom: 1px solid var(--border); color: var(--accent);
+    }
+    .about__emblem { flex-shrink: 0; width: 58px; height: 58px; }
+    .about__record-title { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; }
+    .about__years { margin-top: 24px; font-size: 2.1rem; font-weight: 600; letter-spacing: -.035em; }
+    .about__note { color: var(--muted); font-size: .9rem; }
+    .about__list { margin: 24px 0 0; padding-left: 20px; }
+    .about__list li + li { margin-top: 8px; }
+    .about__disclaimer { margin-top: 24px; font-size: .78rem; color: var(--muted); }
+    .benefits__grid, .reviews__grid { display: grid; gap: 16px; }
+    .benefit {
+      padding: 26px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); transition: transform .2s, border-color .2s;
+    }
+    .benefit:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .benefit__icon {
+      display: inline-grid; place-items: center; height: 44px; min-width: 44px;
+      margin-bottom: 24px; padding-inline: 8px; background: var(--surface-alt);
+      color: var(--accent); font-size: 1.05rem; font-weight: 700; border-radius: 4px;
+    }
+    .benefit__text { margin-top: 12px; color: var(--muted); font-size: .94rem; }
+    .review { display: flex; flex-direction: column; margin: 0; padding: 28px; border-top: 3px solid var(--accent); background: var(--surface); }
+    .review__quote { margin: 0 0 28px; flex: 1; }
+    .review__name { display: block; font-weight: 700; font-style: normal; }
+    .review__role { display: block; font-size: .85rem; color: var(--muted); margin-top: 5px; }
+    .faq__list { border-top: 1px solid var(--border); }
+    .faq__item { border-bottom: 1px solid var(--border); }
+    .faq__question {
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+      width: 100%; padding: 23px 0; border: 0; background: transparent;
+      text-align: left; font-size: 1rem; font-weight: 600; line-height: 1.5;
+    }
+    .faq__question:hover { color: var(--accent); }
+    .faq__symbol { flex-shrink: 0; color: var(--accent); font-size: 1.4rem; transition: transform .2s; }
+    .faq__question[aria-expanded="true"] .faq__symbol { transform: rotate(45deg); }
+    .faq__answer { padding: 0 32px 24px 0; color: var(--muted); max-width: 850px; animation: appear .2s ease-out; }
+    .contacts__grid { display: grid; gap: 32px; }
+    .contacts__details { margin-top: 28px; font-style: normal; }
+    .contacts__details p + p { margin-top: 16px; }
+    .contacts__label { display: block; color: var(--muted); font-size: .82rem; }
+    .contacts__notice { margin-top: 28px; padding: 18px; background: var(--surface-alt); font-size: .88rem; color: var(--muted); }
+    .form { padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); min-width: 0; }
+    .form__fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .form__legend { padding: 0; margin-bottom: 8px; font-size: 1.25rem; font-weight: 600; }
+    .form__hint { margin-bottom: 24px; color: var(--muted); font-size: .85rem; }
+    .form__label { display: block; margin-bottom: 6px; font-size: .9rem; font-weight: 600; }
+    .form__input {
+      display: block; width: 100%; min-width: 0; padding: 11px 12px;
+      border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text); background: var(--background);
+      transition: border-color .2s;
+    }
+    .form__input[aria-invalid="true"] { border-color: var(--error); }
+    .form__input--message { resize: vertical; min-height: 132px; }
+    .form__error { min-height: 2.7em; padding-top: 4px; font-size: .78rem; line-height: 1.35; color: var(--error); }
+    .form__status { min-height: 4.5em; margin-top: 16px; color: var(--accent); font-size: .88rem; }
+    .footer { padding-block: 32px; }
+    .footer__inner { display: flex; flex-direction: column; gap: 16px; font-size: .82rem; color: var(--muted); }
+    .footer__name { color: var(--text); font-weight: 600; }
+    .footer__address { font-style: normal; max-width: 470px; }
+    .modal {
+      width: min(620px, calc(100% - 32px)); max-height: calc(100dvh - 32px);
+      padding: 0; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+    }
+    .modal::backdrop { background: var(--overlay); }
+    .modal[open] { animation: appear .22s ease-out; }
+    .modal__content { padding: 26px; }
+    .modal__header { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+    .modal__title { font-size: 1.5rem; padding-top: 6px; }
+    .modal__close { flex-shrink: 0; }
+    .modal__list { padding-left: 22px; margin: 18px 0 24px; }
+    .modal__list li + li { margin-top: 12px; }
+    .modal__note { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 18px; }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (min-width: 768px) {
+      .layout { width: min(100% - 64px, 1160px); }
+      .brand__name { font-size: 1.4rem; }
+      .brand__caption { font-size: .78rem; }
+      .section { padding-block: 88px; }
+      .about__grid { grid-template-columns: 1.5fr 1fr; align-items: start; }
+      .benefits__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .reviews__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .review { padding: 22px; }
+      .contacts__grid { grid-template-columns: 1fr 1fr; gap: 48px; }
+      .form { padding: 32px; }
+      .footer__inner { flex-direction: row; justify-content: space-between; gap: 32px; }
+      .modal__content { padding: 36px; }
+    }
+    @media (min-width: 1200px) {
+      .header__inner { flex-wrap: nowrap; gap: 36px; min-height: 96px; }
+      .header__actions { order: 3; }
+      .burger { display: none; }
+      .navigation { display: block; width: auto; }
+      .navigation__list { display: flex; gap: 26px; padding: 0; }
+      .navigation__link { padding: 12px 0; }
+      .about { padding-block: 92px; }
+      .about__grid { grid-template-columns: 1.6fr 1fr; gap: 96px; }
+      .about__record { padding: 34px; }
+      .benefits__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .review { padding: 32px; }
+      .contacts__grid { gap: 100px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="header">
+    <div class="header__inner layout">
+      <a class="brand" href="#about" aria-label="Рога и Копыта — о компании">
+        <span class="brand__name">Рога и Копыта</span>
+        <span class="brand__caption">Черноморское отделение</span>
+      </a>
+      <div class="header__actions">
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Тёмная тема" aria-pressed="false" title="Переключить тему">
+          <span class="icon-button__symbol" id="theme-symbol" aria-hidden="true">◐</span>
+        </button>
+        <button class="icon-button burger" id="menu-toggle" type="button" aria-label="Открыть меню" aria-controls="navigation" aria-expanded="false">
+          <span class="burger__lines" aria-hidden="true"></span>
+        </button>
+      </div>
+      <nav class="navigation" id="navigation" aria-label="Основная навигация">
+        <ul class="navigation__list">
+          <li><a class="navigation__link" href="#about">О нас</a></li>
+          <li><a class="navigation__link" href="#benefits">Преимущества</a></li>
+          <li><a class="navigation__link" href="#reviews">Отзывы</a></li>
+          <li><a class="navigation__link" href="#faq">FAQ</a></li>
+          <li><a class="navigation__link" href="#contacts">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="layout">
+        <div class="about__grid">
+          <div>
+            <p class="section__eyebrow">Арбатовская контора · Черноморское отделение</p>
+            <h1 id="about-title">Сырьё — по делу.<br>Поставки — по договору.</h1>
+            <p class="about__text">ООО «Рога и Копыта» объединяет заготовителей и перерабатывающие предприятия. Черноморское отделение принимает рога и копыта, формирует оптовые партии и организует доставку до склада заказчика.</p>
+            <p class="about__text">Работаем с юридическими лицами и индивидуальными предпринимателями: заранее согласуем требования к сырью, фиксируем результаты взвешивания и оформляем каждую поставку документально.</p>
+            <div class="about__actions">
+              <a class="button" href="#contacts">Обсудить поставку <span aria-hidden="true">&nbsp;↗</span></a>
+              <button class="button button--secondary" id="conditions-open" type="button" aria-haspopup="dialog" aria-controls="conditions-modal">Условия приёмки</button>
+            </div>
+          </div>
+          <aside class="about__record" aria-label="Кратко об отделении">
+            <div class="about__seal">
+              <svg class="about__emblem" viewBox="0 0 64 64" role="img" aria-labelledby="emblem-title" fill="none" stroke="currentColor" stroke-width="2">
+                <title id="emblem-title">Эмблема: стилизованные рога в квадратной рамке</title>
+                <rect x="2" y="2" width="60" height="60" rx="3"/>
+                <path d="M31 46V30C18 30 12 22 15 12M33 46V30C46 30 52 22 49 12M22 48h20M23 17c-1 7 2 12 9 16 7-4 10-9 9-16"/>
+              </svg>
+              <p class="about__record-title">Заготовка<br>Учёт<br>Поставка</p>
+            </div>
+            <p class="about__years">С 1998 года</p>
+            <p class="about__note">в сфере заготовки вторичного животного сырья</p>
+            <ul class="about__list">
+              <li>Заготовка и сортировка рогов</li>
+              <li>Приём и подготовка копыт</li>
+              <li>Комплектация оптовых партий</li>
+              <li>Договорное обслуживание предприятий</li>
+            </ul>
+          </aside>
+        </div>
+        <p class="about__disclaimer">Демонстрационный сайт вымышленной компании. История отделения, условия и реквизиты приведены в качестве примера.</p>
+      </div>
+    </section>
+
+    <section class="section benefits" id="benefits" aria-labelledby="benefits-title">
+      <div class="layout">
+        <div class="section__heading">
+          <p class="section__eyebrow">01 / Организация работы</p>
+          <h2 id="benefits-title">Порядок на каждом этапе</h2>
+          <p class="section__intro">От первого осмотра до закрывающих документов — понятные процедуры вместо устных договорённостей.</p>
+        </div>
+        <div class="benefits__grid">
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">24/7</span>
+            <h3>Приёмка без выходных</h3>
+            <p class="benefit__text">Согласуем время разгрузки, в том числе ночью. Круглосуточный приём — по предварительной записи.</p>
+          </article>
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">↗</span>
+            <h3>Собственный транспорт</h3>
+            <p class="benefit__text">Подбираем машину под объём партии и маршрут. Стоимость вывоза фиксируем до отправки транспорта.</p>
+          </article>
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">≡</span>
+            <h3>Прозрачные акты</h3>
+            <p class="benefit__text">В акте указываем массу, категорию сырья и согласованные удержания. Копию передаём поставщику.</p>
+          </article>
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">₽</span>
+            <h3>Работа с НДС</h3>
+            <p class="benefit__text">Заключаем договор и предоставляем комплект бухгалтерских документов. Поддерживаем электронный документооборот.</p>
+          </article>
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">⌕</span>
+            <h3>Выезд оценщика</h3>
+            <p class="benefit__text">Осматриваем крупные партии на площадке поставщика. Заранее обсуждаем сортировку, упаковку и погрузку.</p>
+          </article>
+          <article class="benefit">
+            <span class="benefit__icon" aria-hidden="true">✓</span>
+            <h3>Прослеживаемость партии</h3>
+            <p class="benefit__text">Присваиваем партии учётный номер и сохраняем сведения о происхождении сырья и результатах приёмки.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reviews" id="reviews" aria-labelledby="reviews-title">
+      <div class="layout">
+        <div class="section__heading">
+          <p class="section__eyebrow">02 / Деловые отношения</p>
+          <h2 id="reviews-title">Слово контрагентам</h2>
+          <p class="section__intro">Вымышленные отзывы, иллюстрирующие наш подход к работе.</p>
+        </div>
+        <div class="reviews__grid">
+          <figure class="review">
+            <blockquote class="review__quote"><p>«Согласовали график на месяц вперёд. Машины приходили в назначенное окно, а акты получали в день взвешивания. Для нашего склада это главное».</p></blockquote>
+            <figcaption>
+              <cite class="review__name">Анна Лебедева</cite>
+              <span class="review__role">Руководитель снабжения, ООО «Южный ресурс» · Новороссийск</span>
+            </figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote class="review__quote"><p>«Оценщик помог разделить смешанную партию по категориям. Итоговая цена совпала с согласованным расчётом, без неожиданных удержаний».</p></blockquote>
+            <figcaption>
+              <cite class="review__name">Михаил Орлов</cite>
+              <span class="review__role">Коммерческий директор, ООО «Степной сбор» · Краснодар</span>
+            </figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote class="review__quote"><p>«Заказываем сырьё под производственный план. Удобно, что требования к упаковке прописаны в спецификации, а документы приходят через ЭДО».</p></blockquote>
+            <figcaption>
+              <cite class="review__name">Елена Корнеева</cite>
+              <span class="review__role">Начальник отдела закупок, ООО «Мастерская материала» · Ростов-на-Дону</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" id="faq" aria-labelledby="faq-title">
+      <div class="layout">
+        <div class="section__heading">
+          <p class="section__eyebrow">03 / До первой поставки</p>
+          <h2 id="faq-title">Частые вопросы</h2>
+        </div>
+        <div class="faq__list">
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-1" aria-expanded="false" aria-controls="answer-1">Какое сырьё вы принимаете?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-1" role="region" aria-labelledby="question-1" hidden><p>Рога и копыта сельскохозяйственных животных с подтверждённым происхождением. Сырьё должно быть очищено от посторонних примесей, отсортировано и упаковано. Категорию и допустимое состояние согласуем по описанию, фотографиям или результатам осмотра.</p></div>
+          </article>
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-2" aria-expanded="false" aria-controls="answer-2">Есть ли минимальный объём партии?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-2" role="region" aria-labelledby="question-2" hidden><p>Стандартная партия — от 100 кг. Меньшие объёмы рассматриваем отдельно при самостоятельной доставке. Для вывоза нашим транспортом минимальный объём зависит от расстояния и загрузки машины.</p></div>
+          </article>
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-3" aria-expanded="false" aria-controls="answer-3">Какие документы понадобятся?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-3" role="region" aria-labelledby="question-3" hidden><p>Реквизиты организации или ИП, договор, документы на передачу партии и подтверждение происхождения сырья. Необходимость ветеринарных сопроводительных документов определяется видом и состоянием сырья и действующими требованиями. Перечень согласуем до отгрузки.</p></div>
+          </article>
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-4" aria-expanded="false" aria-controls="answer-4">Как рассчитывается стоимость?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-4" role="region" aria-labelledby="question-4" hidden><p>Цена зависит от категории, чистоты, состояния и объёма сырья. Предварительную ставку указываем в предложении, окончательную массу фиксируем при взвешивании. Транспортные расходы и возможные удержания согласуем отдельно до поставки.</p></div>
+          </article>
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-5" aria-expanded="false" aria-controls="answer-5">Можно ли привезти сырьё ночью?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-5" role="region" aria-labelledby="question-5" hidden><p>Да, по предварительной записи. Перед выездом необходимо согласовать окно разгрузки и сообщить сведения об автомобиле и водителе. Без подтверждённой записи ночная приёмка не гарантируется.</p></div>
+          </article>
+          <article class="faq__item">
+            <h3><button class="faq__question" type="button" id="question-6" aria-expanded="false" aria-controls="answer-6">Когда производится оплата?<span class="faq__symbol" aria-hidden="true">+</span></button></h3>
+            <div class="faq__answer" id="answer-6" role="region" aria-labelledby="question-6" hidden><p>При стандартных условиях — в течение пяти рабочих дней после подписания акта приёмки и получения полного комплекта документов. Конкретные сроки и порядок безналичных расчётов закрепляются в договоре.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contacts" id="contacts" aria-labelledby="contacts-title">
+      <div class="layout contacts__grid">
+        <div>
+          <p class="section__eyebrow">04 / Связь с отделением</p>
+          <h2 id="contacts-title">Начнём с вашей партии</h2>
+          <p class="section__intro">Укажите вид сырья, примерный объём и город отгрузки. Эти сведения помогут подготовить предметный расчёт и подобрать способ доставки.</p>
+          <address class="contacts__details">
+            <p><span class="contacts__label">Электронная почта · демонстрационный адрес</span>office@roga-kopyta.example</p>
+            <p><span class="contacts__label">Отдел договоров</span>Пн–пт, 09:00–18:00, московское время</p>
+            <p><span class="contacts__label">Складская приёмка</span>Круглосуточно по согласованной записи</p>
+          </address>
+          <p class="contacts__notice">Форма работает в демонстрационном режиме: проверяет поля и имитирует отправку. Данные не передаются и не сохраняются. Не указывайте конфиденциальную информацию.</p>
+        </div>
+        <form class="form" id="contact-form" novalidate>
+          <fieldset class="form__fieldset">
+            <legend class="form__legend">Запрос на сотрудничество</legend>
+            <p class="form__hint">Все поля обязательны для заполнения.</p>
+            <div class="form__field">
+              <label class="form__label" for="contact-name">Ваше имя</label>
+              <input class="form__input" id="contact-name" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="name-error">
+              <p class="form__error" id="name-error" aria-live="polite"></p>
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="contact-email">Email</label>
+              <input class="form__input" id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-error">
+              <p class="form__error" id="email-error" aria-live="polite"></p>
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="contact-message">Сообщение</label>
+              <textarea class="form__input form__input--message" id="contact-message" name="message" rows="5" maxlength="5000" required aria-describedby="message-error"></textarea>
+              <p class="form__error" id="message-error" aria-live="polite"></p>
+            </div>
+            <button class="button" type="submit">Отправить</button>
+          </fieldset>
+          <p class="form__status" id="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="layout footer__inner">
+      <div>
+        <p class="footer__name">© <span id="copyright-year">2026</span> ООО «Рога и Копыта»</p>
+        <p>Черноморское отделение Арбатовской конторы</p>
+      </div>
+      <address class="footer__address">Юридический адрес (вымышленный):<br>123456, г. Арбатов, ул. Заготовительная, д. 12, офис 4.</address>
+    </div>
+  </footer>
+
+  <dialog class="modal" id="conditions-modal" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <div class="modal__content">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title">Условия приёмки</h2>
+        <button class="icon-button modal__close" id="conditions-close" type="button" aria-label="Закрыть условия приёмки" autofocus><span class="icon-button__symbol" aria-hidden="true">×</span></button>
+      </div>
+      <p id="modal-description">Перед отправкой партии согласуйте её состав, объём и время прибытия с отделом договоров.</p>
+      <ol class="modal__list">
+        <li><strong>Происхождение.</strong> Принимаем сырьё от юридических лиц и ИП при наличии подтверждающих документов. Сырьё неизвестного происхождения не принимается.</li>
+        <li><strong>Подготовка.</strong> Рога и копыта необходимо разделить по видам, очистить от посторонних примесей и упаковать в согласованную тару, исключающую рассыпание и протечки.</li>
+        <li><strong>Состояние.</strong> Партии с признаками гниения, химического загрязнения или несогласованными примесями приёмке не подлежат.</li>
+        <li><strong>Учёт.</strong> Масса нетто определяется на складе с вычетом тары. Категория и результаты осмотра отражаются в акте приёмки.</li>
+        <li><strong>Расчёты.</strong> Цена, транспортные расходы, сроки оплаты и порядок урегулирования разногласий фиксируются в договоре.</li>
+        <li><strong>Доставка.</strong> Приёмка круглосуточная по записи. Необходимые сопроводительные документы проверяются до разгрузки.</li>
+      </ol>
+      <p class="modal__note">Это демонстрационные условия вымышленной компании, а не публичная оферта. Для реальных поставок необходимы отдельный договор и проверка действующих требований законодательства.</p>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeSymbol = document.getElementById('theme-symbol');
+
+      function updateThemeControl() {
+        const dark = root.classList.contains('theme--dark');
+        themeToggle.setAttribute('aria-pressed', String(dark));
+        themeToggle.title = dark ? 'Включить светлую тему' : 'Включить тёмную тему';
+        themeSymbol.textContent = dark ? '☀' : '◐';
+      }
+
+      updateThemeControl();
+      themeToggle.addEventListener('click', function () {
+        root.classList.toggle('theme--dark');
+        updateThemeControl();
+        try {
+          localStorage.setItem('rk-theme', root.classList.contains('theme--dark') ? 'dark' : 'light');
+        } catch (error) {}
+      });
+
+      const menuToggle = document.getElementById('menu-toggle');
+      const navigation = document.getElementById('navigation');
+      const desktop = window.matchMedia('(min-width: 1200px)');
+
+      function closeMenu(restoreFocus) {
+        if (restoreFocus) menuToggle.focus();
+        navigation.classList.remove('navigation--open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Открыть меню');
+      }
+
+      menuToggle.addEventListener('click', function () {
+        const open = menuToggle.getAttribute('aria-expanded') !== 'true';
+        navigation.classList.toggle('navigation--open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        menuToggle.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+      });
+
+      navigation.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          closeMenu(!desktop.matches);
+        });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+          closeMenu(true);
+        }
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.header')) closeMenu(false);
+      });
+
+      desktop.addEventListener('change', function () {
+        const focusInside = navigation.contains(document.activeElement);
+        closeMenu(!desktop.matches && focusInside);
+      });
+
+      document.querySelectorAll('.faq__question').forEach(function (button) {
+        button.addEventListener('click', function () {
+          const expanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', String(!expanded));
+          document.getElementById(button.getAttribute('aria-controls')).hidden = expanded;
+        });
+      });
+
+      const modal = document.getElementById('conditions-modal');
+      const modalOpen = document.getElementById('conditions-open');
+      const modalClose = document.getElementById('conditions-close');
+      let previousFocus = null;
+      let pointerStartedOutside = false;
+
+      modalOpen.addEventListener('click', function () {
+        previousFocus = document.activeElement;
+        modal.showModal();
+        document.body.classList.add('page--locked');
+        modalClose.focus();
+      });
+
+      modalClose.addEventListener('click', function () {
+        modal.close();
+      });
+
+      function outsideModal(event) {
+        const bounds = modal.getBoundingClientRect();
+        return event.clientX < bounds.left || event.clientX > bounds.right ||
+          event.clientY < bounds.top || event.clientY > bounds.bottom;
+      }
+
+      modal.addEventListener('pointerdown', function (event) {
+        pointerStartedOutside = event.target === modal && outsideModal(event);
+      });
+
+      modal.addEventListener('click', function (event) {
+        if (pointerStartedOutside && event.target === modal && outsideModal(event)) {
+          modal.close();
+        }
+        pointerStartedOutside = false;
+      });
+
+      modal.addEventListener('cancel', function (event) {
+        event.preventDefault();
+        modal.close();
+      });
+
+      modal.addEventListener('close', function () {
+        document.body.classList.remove('page--locked');
+        if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+      });
+
+      modal.addEventListener('keydown', function (event) {
+        if (event.key !== 'Tab') return;
+        const focusable = Array.from(modal.querySelectorAll(
+          'button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), [tabindex="0"]'
+        ));
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      const form = document.getElementById('contact-form');
+      const status = document.getElementById('form-status');
+      const fields = [
+        document.getElementById('contact-name'),
+        document.getElementById('contact-email'),
+        document.getElementById('contact-message')
+      ];
+
+      function validate(field) {
+        const value = field.value.trim();
+        let message = '';
+        if (!value) {
+          message = field.name === 'name' ? 'Введите ваше имя.' :
+            field.name === 'email' ? 'Введите email.' : 'Напишите сообщение.';
+        } else if (field.name === 'email' &&
+          (field.validity.typeMismatch || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) {
+          message = 'Укажите email в формате name@example.ru.';
+        }
+        document.getElementById(field.getAttribute('aria-describedby')).textContent = message;
+        field.setAttribute('aria-invalid', String(Boolean(message)));
+        return !message;
+      }
+
+      fields.forEach(function (field) {
+        field.addEventListener('blur', function () {
+          if (field.value || field.hasAttribute('aria-invalid')) validate(field);
+        });
+        field.addEventListener('input', function () {
+          status.textContent = '';
+          if (field.hasAttribute('aria-invalid')) validate(field);
+        });
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        status.textContent = '';
+        fields.forEach(function (field) {
+          field.value = field.value.trim();
+        });
+        const results = fields.map(validate);
+        const firstInvalid = results.indexOf(false);
+        if (firstInvalid !== -1) {
+          fields[firstInvalid].focus();
+          return;
+        }
+        form.reset();
+        fields.forEach(function (field) {
+          field.removeAttribute('aria-invalid');
+          document.getElementById(field.getAttribute('aria-describedby')).textContent = '';
+        });
+        status.textContent = 'Готово! Отправка успешно имитирована. Поля очищены; данные никуда не передавались.';
+      });
+
+      document.getElementById('copyright-year').textContent = new Date().getFullYear();
+    }());
+  </script>
+</body>
+</html>
